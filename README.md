@@ -1,2 +1,1 @@
-# nfuse
-Fuse build tool wrapper for nodejs
+# NPM build utility for FuseTools

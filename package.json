@@ -1,0 +1,11 @@
+{
+	"name": "nfuse",
+	"version": "1.0.4",
+	"description": "Fuse build tool wrapper for nodejs",
+	"preferGlobal":true,
+	"bin" : {
+		"nfuse" : "nfuse.js"
+	},
+	"author": "Andreas Rønning",
+	"license": "ISC"
+}

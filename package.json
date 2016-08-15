@@ -6,6 +6,13 @@
 	"bin" : {
 		"nfuse" : "nfuse.js"
 	},
+	"bugs" : { 
+		"url" : "https://github.com/Sunjammer/nfuse/issues"
+	},
 	"author": "Andreas Rønning",
-	"license": "ISC"
+	"license": "ISC",
+	"repository" :  { 
+		"type" : "git",
+		"url" : "https://github.com/Sunjammer/nfuse.git"
+	}
 }

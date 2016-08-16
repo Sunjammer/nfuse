@@ -1,18 +1,21 @@
 {
-	"name": "nfuse",
-	"version": "1.0.4",
-	"description": "Fuse build tool wrapper for nodejs",
-	"preferGlobal":true,
-	"bin" : {
-		"nfuse" : "nfuse.js"
-	},
-	"bugs" : { 
-		"url" : "https://github.com/Sunjammer/nfuse/issues"
-	},
-	"author": "Andreas Rønning",
-	"license": "ISC",
-	"repository" :  { 
-		"type" : "git",
-		"url" : "https://github.com/Sunjammer/nfuse.git"
-	}
+  "name": "nfuse",
+  "version": "1.0.4",
+  "description": "Fuse build tool wrapper for nodejs",
+  "preferGlobal": true,
+  "bin": {
+    "nfuse": "nfuse.js"
+  },
+  "bugs": {
+    "url": "https://github.com/Sunjammer/nfuse/issues"
+  },
+  "author": "Andreas Rønning",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Sunjammer/nfuse.git"
+  },
+  "dependencies": {
+    "fstream-ignore": "^1.0.5"
+  }
 }

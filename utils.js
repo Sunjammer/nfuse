@@ -35,18 +35,6 @@ const getFilesInDir = exports.getFilesInDir = function({baseDir, ignoreDirs=[]})
   return out
 }
 
-module.exports.stringBeginsWith = function() {
-  const first = arguments[0]
-  var args = []
-  for(var i = 1; i<arguments.length; i++)
-    args.push(arguments[i])
-    
-  if(args.length>1)
-    return args.filter(i => first.indexOf(i) == 0).length != 0
-    
-  return first.indexOf(arguments[0]) == 0
-}
-
 module.exports.loadJson = function(path) {
   return JSON.parse(FS.readFileSync(path))
 }

@@ -93,13 +93,12 @@ function nodeModulesPaths(startPath) {
   return dirs
 }
 
-module.exports = function(args) {
-  args = utils.ArgsObject({baseDir:null, moduleName:null}, args)
+module.exports = function({baseDir, moduleName}) {
   let outPaths = []
   
   /*1. If X is a core module,
      a. return the core module
      b. STOP*/ // Super Polyfill Bros 2
-  loadNodeModules(args.moduleName, args.baseDir, outPaths)
+  loadNodeModules(moduleName, baseDir, outPaths)
   return outPaths
 }

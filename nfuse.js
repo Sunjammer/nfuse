@@ -12,7 +12,6 @@ const createUnoFile = require('./createUnoFile')
 
 
 const cwd = Path.normalize(Process.cwd())
-console.log('Running from '+cwd)
 const mainProjectPath = ProjectTools.getProjectPathFromDir(cwd) 
 const mainProject = ProjectTools.loadProjectFromPath(mainProjectPath)
 const mainProjectName = ProjectTools.getNameFromProjectDir(cwd)
@@ -24,8 +23,7 @@ const moduleProject = ProjectTools.createModuleProject()
 const rootPackage = Utils.loadJsonFromDir({directory:cwd, filename:'package.json'})
 
 let includes = []
-for(let moduleName in rootPackage.dependencies)
-{
+for(let moduleName in rootPackage.dependencies) {
   let files = resolve({baseDir:cwd, moduleName:moduleName})
   files = files.map(p => Path.relative(cwd, p))
   if(files.length==0) throw `Couldn't resolve dependency "${moduleName}", make sure to run "npm install"`
@@ -45,19 +43,15 @@ ProjectTools.addProjects({project:mainProject, projectsArray:[Path.relative(cwd,
 ProjectTools.saveProjectToFile({project:mainProject, path:mainProjectPath})
 
 let args = Process.argv.slice(2)
-if(args.length>0)
-{
+if(args.length>0) {
   const first = args.shift()
   const fuseArgs = [first].concat(args)
   const fuse = ChildProcess.spawn(FUSEPATH, fuseArgs)
+  
+  const write = data => Process.stdout.write(data)
 
-  fuse.stdout.on('data', data => 
-    Process.stdout.write(data)
-  )
-
-  fuse.stderr.on('data', data => 
-    Process.stdout.write(data)
-  )
+  fuse.stdout.on('data', write)
+  fuse.stderr.on('data', write)
 
   fuse.on('close', code => 
     console.log(`Fuse exited with code ${code}`)

@@ -20,16 +20,15 @@ const ensurePathValid = exports.ensurePathValid = function(filePath) {
   FS.mkdirSync(dirname)
 }
 
-const getFilesInDir = exports.getFilesInDir = function(args) {
-  args = ArgsObject({baseDir:null, ignoreDirs:[]},args)
+const getFilesInDir = exports.getFilesInDir = function({baseDir, ignoreDirs=[]}) {
   let out = []
-  if(!directoryExists(args.baseDir)) return out
-  FS.readdirSync(args.baseDir).forEach(f => {
-    f = args.baseDir+Path.sep+f
+  if(!directoryExists(baseDir)) return out
+  FS.readdirSync(baseDir).forEach(f => {
+    f = baseDir+Path.sep+f
     let stat = FS.statSync(f)
     if(stat.isDirectory()) {
-      if(args.ignoreDirs.indexOf(Path.basename(f) == -1 ))
-        getFilesInDir({baseDir:f, ignoreDirs:args.ignoreDirs}).forEach(p => out.push(p))
+      if(ignoreDirs.indexOf(Path.basename(f) == -1 ))
+        getFilesInDir({baseDir:f, ignoreDirs:ignoreDirs}).forEach(p => out.push(p))
     }
     out.push(f)
   })
@@ -58,23 +57,11 @@ module.exports.moduleExists = function(name) {
   return true
 }
 
-module.exports.loadJsonFromDir = function(args) {
-  args = ArgsObject({directory:null, filename:null}, args)
-  return ArrayUtils(FS.readdirSync(args.directory)
-		.filter(file => { return Path.basename(file) == args.filename })
-		.map(file => { return JSON.parse(FS.readFileSync(Path.join(args.directory, file))) })
+module.exports.loadJsonFromDir = function({directory, filename}) {
+  return ArrayUtils(FS.readdirSync(directory)
+    .filter(file => { return Path.basename(file) == filename })
+    .map(file => { return JSON.parse(FS.readFileSync(Path.join(directory, file))) })
     ).firstOrDefault(null)
-}
-
-const ArgsObject = module.exports.ArgsObject = function(defaults, input) {
-  let args = {}
-  for(let k in defaults) {
-    if(defaults[k] === null)
-      if(!input.hasOwnProperty(k))
-        throw `Missing argument "${k}" is required`
-    args[k] = input.hasOwnProperty(k) ? input[k] : defaults[k]
-  }
-  return args
 }
 
 module.exports.stringEndsWith = function() {

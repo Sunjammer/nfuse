@@ -2,8 +2,7 @@
 'use strict'
 const FS = require('fs')
 const Path = require('path')
-const ArrayUtils = require('./utils').ArrayUtils
-const ArgsObject = require('./utils').ArgsObject
+const {ArrayUtils} = require('./utils')
 
 module.exports.getProjectPathFromDir = function(dir) {
   return ArrayUtils(FS.readdirSync(dir)
@@ -24,27 +23,24 @@ function addUniqueArrayValues(obj, arrayName, values) {
     .forEach(i => obj[arrayName].push(i))
 }
 
-module.exports.addProjects = function(args) {
-  args = ArgsObject({project:null, projectsArray:null}, args)
-  addUniqueArrayValues(args.project, 'Projects', args.projectsArray)
-  return args.project
+module.exports.addProjects = function({project, projectsArray}) {
+  addUniqueArrayValues(project, 'Projects', projectsArray)
+  return project
 }
 
-module.exports.addIncludes = function(args) {
-  args = ArgsObject({project:null, includesArray:null}, args)
-  args.includesArray = args.includesArray.map(i => i + (Path.extname(i) == '.js' ? ':Bundle' : ''))
-  addUniqueArrayValues(args.project, 'Includes', args.includesArray)
-  return args.project
+module.exports.addIncludes = function({project, includesArray}) {
+  includesArray = includesArray.map(i => i + (Path.extname(i) == '.js' ? ':Bundle' : ''))
+  addUniqueArrayValues(project, 'Includes', includesArray)
+  return project
 }
 
 module.exports.getNameFromProjectDir = function(dir) {
   return dir.split(Path.sep).pop()
 }
 
-module.exports.saveProjectToFile = function(args) {
-  args = ArgsObject({project:null, path:null},args)
-  let str = JSON.stringify(args.project, null, 2) //defaulting to spaces here may not be popular everywhere?
-  FS.writeFileSync(args.path, str)
+module.exports.saveProjectToFile = function({project, path}) {
+  let str = JSON.stringify(project, null, 2) //defaulting to spaces here may not be popular everywhere?
+  FS.writeFileSync(path, str)
 }
 
 module.exports.createModuleProject = function() {

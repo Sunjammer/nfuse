@@ -1,8 +1,7 @@
 'use strict'
 const FS = require('fs')
 const SEP = require('path').sep
-const loadJson = require('./utils').loadJson
-const ArgsObject = require('/.utils').ArgsObject
+const {loadJson} = require('./utils')
 
 function isFile(f) {
   let stats = FS.statSync(f) 
@@ -14,22 +13,21 @@ function isDir(f) {
   return !stats.isDirectory()
 }
 
-const getFilesInDir = exports.getFilesInDir = function(args) {
-  args = ArgsObject({dir:null, recursive:false, out:[]}, args)
-  if(!FS.existsSync(args.dir))
-    return args.out
+const getFilesInDir = exports.getFilesInDir = function({dir, recursive=false, out=[]}) {
+  if(!FS.existsSync(dir))
+    return out
     
   let files = 
-    FS.readdirSync(args.dir)
+    FS.readdirSync(dir)
       .filter( f => f.charAt(0) != '.' )
-      .map( f => args.dir+SEP+f )
+      .map( f => dir+SEP+f )
       
-  if(!args.recursive)
+  if(!recursive)
     return files.filter(isFile)
   
-  files.filter(isFile).forEach(f => args.out.push(f))
-  files.filter(isDir).forEach(f => getFilesInDir({dir:f, recursive:true, out:args.out}) )
-  return args.out
+  files.filter(isFile).forEach(f => out.push(f))
+  files.filter(isDir).forEach(f => getFilesInDir({dir:f, recursive:true, out:out}) )
+  return out
 }
 
 function getDirsInDir(dir) {
@@ -42,7 +40,7 @@ function getDirsInDir(dir) {
     .filter( f => { let stats = FS.statSync(f); return stats.isDirectory() })
 }
 
-const resolve = function(pack)
+function resolve(pack)
 {
   return pack.browser !== undefined
     ? pack.browser

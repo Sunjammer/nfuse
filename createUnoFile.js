@@ -2,8 +2,7 @@
 const FS = require('fs')
 const utils = require('./utils')
 
-function gen(typeName, name, mainPath, projectname)
-{
+function gen(typeName, name, mainPath, projectname) {
   return `
   using Uno.Threading;
   using Uno;
@@ -37,18 +36,11 @@ function gen(typeName, name, mainPath, projectname)
   `
 }
 
-module.exports = function(config) {
-  let args = utils.ArgsObject({
-    name : null, 
-    mainPath : null,
-    projectname : null,
-    outDir : null
-  }, config)
-  
-  args.mainPath = args.mainPath.split('\\').join('/')
-  let typeName = args.name.split('-').join('_')
-  let src = gen(typeName, args.name, args.mainPath, args.projectname)
-  let filePath = args.outDir + `/Lib_${typeName}.uno`
+module.exports = function({name, mainPath, projectname, outDir}) {
+  mainPath = mainPath.split('\\').join('/')
+  let typeName = name.split('-').join('_')
+  let src = gen(typeName, name, mainPath, projectname)
+  let filePath = outDir + `/Lib_${typeName}.uno`
   utils.ensurePathValid(filePath)
   FS.writeFileSync(filePath, src)
   return filePath

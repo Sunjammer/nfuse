@@ -11,6 +11,15 @@ function directoryExists(p) {
   }
 }
 
+const fileExists = exports.fileExists = function(filePath) {
+  try {
+    return FS.statSync(filePath)
+  }
+  catch (err) {
+    return false
+  }
+}
+
 const ensurePathValid = exports.ensurePathValid = function(filePath) {
   var dirname = Path.dirname(filePath)
   if (directoryExists(dirname)) {
@@ -33,18 +42,6 @@ const getFilesInDir = exports.getFilesInDir = function({baseDir, ignoreDirs=[]})
     out.push(f)
   })
   return out
-}
-
-module.exports.stringBeginsWith = function() {
-  const first = arguments[0]
-  var args = []
-  for(var i = 1; i<arguments.length; i++)
-    args.push(arguments[i])
-    
-  if(args.length>1)
-    return args.filter(i => first.indexOf(i) == 0).length != 0
-    
-  return first.indexOf(arguments[0]) == 0
 }
 
 module.exports.loadJson = function(path) {

@@ -13,21 +13,28 @@ const ignore = require('fstream-ignore')
 const _ = require('lodash')
 
 const cwd = Path.normalize(Process.cwd())
+
+const rootPackage = Utils.loadJsonFromDir({directory:cwd, filename:'package.json'})
+
+if(rootPackage==null)
+  throw 'nfuse requires a package.json to resolve dependencies'
+
 const mainProjectPath = ProjectTools.getProjectPathFromDir(cwd) 
 const mainProject = ProjectTools.loadProjectFromPath(mainProjectPath)
 const mainProjectName = ProjectTools.getNameFromProjectDir(cwd)
 
 const moduleProjectDir = cwd + Path.sep + 'NPM-Packages'
+const depCachePath = moduleProjectDir + Path.sep + 'dependencies.json'
 const moduleProjectPath = Path.join(moduleProjectDir, mainProjectName + '_modules.unoproj')
-let previousDeps = Utils.fileExists(moduleProjectPath) ? ProjectTools.loadProjectFromPath(moduleProjectPath).NPMPackages : []
+let previousDeps = Utils.fileExists(depCachePath) ? Utils.loadJson(depCachePath).dependencies : []
 const moduleProject = ProjectTools.createModuleProject()
 
-const rootPackage = Utils.loadJsonFromDir({directory:cwd, filename:'package.json'})
 
 let includes = []
 let packageDirs = []
 
 let currentDeps = []
+let newDeps = []
 for(let moduleName in rootPackage.dependencies)
   currentDeps.push(moduleName+':'+rootPackage.dependencies[moduleName])
   
@@ -44,7 +51,6 @@ if(_.isEqual(previousDeps.sort(), currentDeps.sort())) {
 
 function buildModuleProject()
 {
-  moduleProject.NPMPackages = []
   for(let moduleName in rootPackage.dependencies) {
     let {files, dirs} = resolve({baseDir:cwd, moduleName:moduleName})
     packageDirs = packageDirs.concat(dirs)
@@ -57,7 +63,7 @@ function buildModuleProject()
       projectname : mainProjectName + '_modules',
       outDir : moduleProjectDir
     })
-    moduleProject.NPMPackages.push(moduleName+':'+rootPackage.dependencies[moduleName])
+    newDeps.push(moduleName+':'+rootPackage.dependencies[moduleName])
     includes.push(Path.relative(moduleProjectDir, filePath))
   }
   step()
@@ -83,9 +89,10 @@ function collate(dir, out) {
 function finish()
 {
   ProjectTools.addIncludes({project:moduleProject, includesArray:includes})
-  ProjectTools.saveProjectToFile({project:moduleProject, path:moduleProjectPath})
+  Utils.saveJson({obj:moduleProject, path:moduleProjectPath})
   ProjectTools.addProjects({project:mainProject, projectsArray:[Path.relative(cwd, moduleProjectPath)]})
-  ProjectTools.saveProjectToFile({project:mainProject, path:mainProjectPath})
+  Utils.saveJson({obj:mainProject, path:mainProjectPath})
+  Utils.saveJson({obj:{'dependencies':newDeps}, path:depCachePath})
   runFuse()
 }
 

@@ -48,6 +48,11 @@ module.exports.loadJson = function(path) {
   return JSON.parse(FS.readFileSync(path))
 }
 
+module.exports.saveJson = function({obj, path}) {
+  let str = JSON.stringify(obj, null, 2) 
+  FS.writeFileSync(path, str)
+}
+
 module.exports.moduleExists = function(name) {
   try { require.resolve(name) }
   catch(e) { return false }

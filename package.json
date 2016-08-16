@@ -16,6 +16,7 @@
     "url": "https://github.com/Sunjammer/nfuse.git"
   },
   "dependencies": {
-    "fstream-ignore": "^1.0.5"
+    "fstream-ignore": "^1.0.5",
+    "lodash": "^4.15.0"
   }
 }

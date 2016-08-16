@@ -11,6 +11,15 @@ function directoryExists(p) {
   }
 }
 
+const fileExists = exports.fileExists = function(filePath) {
+  try {
+    return FS.statSync(filePath)
+  }
+  catch (err) {
+    return false
+  }
+}
+
 const ensurePathValid = exports.ensurePathValid = function(filePath) {
   var dirname = Path.dirname(filePath)
   if (directoryExists(dirname)) {

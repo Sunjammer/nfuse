@@ -44,5 +44,5 @@ module.exports.saveProjectToFile = function({project, path}) {
 }
 
 module.exports.createModuleProject = function() {
-  return {'Packages':['Fuse','Fuse.Scripting'], 'Includes':[] }
+  return {'Packages':['FuseCore','Fuse.Scripting'], 'Includes':[] }
 }

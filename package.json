@@ -1,15 +1,18 @@
 {
   "name": "nfuse",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "description": "Fuse build tool wrapper for nodejs",
   "preferGlobal": true,
   "bin": {
-    "nfuse": "nfuse.js"
+    "nfuse": "lib/nfuse.js"
   },
   "bugs": {
     "url": "https://github.com/Sunjammer/nfuse/issues"
   },
-  "author": "Andreas Rønning",
+  "scripts": {
+    "build": "babel src -d lib --no-comments"
+  },
+  "author": "Andreas Rønning | fusetools.com",
   "license": "ISC",
   "repository": {
     "type": "git",
@@ -18,5 +21,9 @@
   "dependencies": {
     "fstream-ignore": "^1.0.5",
     "lodash": "^4.15.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.0.0",
+    "babel-preset-es2015": "^6.13.2"
   }
 }

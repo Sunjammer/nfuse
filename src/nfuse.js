@@ -1,10 +1,8 @@
 #! /usr/bin/env node
 'use strict'
-const FUSEPATH = 'fuse'
 const Process = require('process')
 const Path = require('path')
 const FS = require('fs')
-const ChildProcess = require('child_process')
 const ProjectTools = require('./unoproj')
 const Utils = require('./utils')
 const resolve = require('./resolve')
@@ -30,7 +28,6 @@ const moduleProjectPath = Path.join(moduleProjectDir, mainProjectName + '_module
 let previousDeps = Utils.fileExists(depCachePath) ? Utils.loadJson(depCachePath).dependencies : []
 const moduleProject = ProjectTools.createModuleProject()
 
-
 let includes = []
 let packageDirs = []
 
@@ -42,10 +39,12 @@ for(let moduleName in rootPackage.dependencies)
 previousDeps.sort()
 currentDeps.sort()
   
-if(_.isEqual(previousDeps.sort(), currentDeps.sort())) {
-  runFuse()
+if(!_.isEqual(previousDeps.sort(), currentDeps.sort())) {
+  console.warn('No changes required')
+  Process.exit(0)
 } else {
   Utils.getFilesInDir({baseDir:moduleProjectDir})
+    .filter(f => Path.extname(f) == '.uno' )
     .forEach(f => FS.unlinkSync(f) )
   buildModuleProject()
 }
@@ -89,7 +88,7 @@ function collate(dir, out) {
   ignore({ path: dir, ignoreFiles: ['.npmignore', '.gitignore'] })
     .on('child', c => {
       const ext = Path.extname(c.path)
-      if(ext != '.js' || ext != '.unoproj') return
+      if(ext != '.js' && ext != '.unoproj') return
       let relativePath = Path.relative(moduleProjectDir, c.path)
       if(out.indexOf(relativePath) == -1) out.push(relativePath)
     }) 
@@ -104,24 +103,4 @@ function finish()
   ProjectTools.addExcludes({project:mainProject, excludesArray:['node_modules', 'NPM-Packages']})
   Utils.saveJson({obj:mainProject, path:mainProjectPath})
   Utils.saveJson({obj:{'dependencies':newDeps}, path:depCachePath})
-  runFuse()
-}
-
-function runFuse()
-{
-  let args = Process.argv.slice(2)
-  if(args.length>0) {
-    const first = args.shift()
-    const fuseArgs = [first].concat(args)
-    const fuse = ChildProcess.spawn(FUSEPATH, fuseArgs)
-    
-    const write = data => Process.stdout.write(data)
-
-    fuse.stdout.on('data', write)
-    fuse.stderr.on('data', write)
-
-    fuse.on('close', code => 
-      console.log(`Fuse exited with code ${code}`)
-    )
-  }
 }

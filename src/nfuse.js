@@ -14,7 +14,7 @@ const cwd = Path.normalize(Process.cwd())
 
 const rootPackage = Utils.loadJsonFromDir({directory:cwd, filename:'package.json'})
 if(rootPackage==null){
-  console.error(`No package.json found in ${cwd}`)
+  console.error(`nfuse: No package.json found in ${cwd}`)
   Process.exit(1)
 }
 
@@ -39,8 +39,8 @@ for(let moduleName in rootPackage.dependencies)
 previousDeps.sort()
 currentDeps.sort()
   
-if(!_.isEqual(previousDeps.sort(), currentDeps.sort())) {
-  console.warn('No changes required')
+if(_.isEqual(previousDeps.sort(), currentDeps.sort())) {
+  console.warn('nfuse: No changes required')
   Process.exit(0)
 } else {
   Utils.getFilesInDir({baseDir:moduleProjectDir})
@@ -57,7 +57,7 @@ function buildModuleProject()
       packageDirs = packageDirs.concat(dirs)
       files = files.map(p => Path.relative(cwd, p))
       if(files.length==0){
-        console.error(`Couldn't resolve dependency '${moduleName}', make sure to run 'npm install'`)
+        console.error(`nfuse: Couldn't resolve dependency '${moduleName}', make sure to run 'npm install'`)
         Process.exit(1)
       } 
       includes = includes.concat(files.map(f => Path.relative(moduleProjectDir, f)))
@@ -103,4 +103,5 @@ function finish()
   ProjectTools.addExcludes({project:mainProject, excludesArray:['node_modules', 'NPM-Packages']})
   Utils.saveJson({obj:mainProject, path:mainProjectPath})
   Utils.saveJson({obj:{'dependencies':newDeps}, path:depCachePath})
+  console.log('nfuse: Completed successfully')
 }

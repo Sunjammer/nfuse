@@ -28,7 +28,6 @@ const moduleProjectPath = Path.join(moduleProjectDir, mainProjectName + '_module
 let previousDeps = Utils.fileExists(depCachePath) ? Utils.loadJson(depCachePath).dependencies : []
 const moduleProject = ProjectTools.createModuleProject()
 
-
 let includes = []
 let packageDirs = []
 
@@ -45,6 +44,7 @@ if(!_.isEqual(previousDeps.sort(), currentDeps.sort())) {
   Process.exit(0)
 } else {
   Utils.getFilesInDir({baseDir:moduleProjectDir})
+    .filter(f => Path.extname(f) == '.uno' )
     .forEach(f => FS.unlinkSync(f) )
   buildModuleProject()
 }

@@ -1,10 +1,8 @@
 #! /usr/bin/env node
 'use strict'
-const FUSEPATH = 'fuse'
 const Process = require('process')
 const Path = require('path')
 const FS = require('fs')
-const ChildProcess = require('child_process')
 const ProjectTools = require('./unoproj')
 const Utils = require('./utils')
 const resolve = require('./resolve')
@@ -42,8 +40,9 @@ for(let moduleName in rootPackage.dependencies)
 previousDeps.sort()
 currentDeps.sort()
   
-if(_.isEqual(previousDeps.sort(), currentDeps.sort())) {
-  runFuse()
+if(!_.isEqual(previousDeps.sort(), currentDeps.sort())) {
+  console.warn('No changes required')
+  Process.exit(0)
 } else {
   Utils.getFilesInDir({baseDir:moduleProjectDir})
     .forEach(f => FS.unlinkSync(f) )
@@ -104,24 +103,4 @@ function finish()
   ProjectTools.addExcludes({project:mainProject, excludesArray:['node_modules', 'NPM-Packages']})
   Utils.saveJson({obj:mainProject, path:mainProjectPath})
   Utils.saveJson({obj:{'dependencies':newDeps}, path:depCachePath})
-  runFuse()
-}
-
-function runFuse()
-{
-  let args = Process.argv.slice(2)
-  if(args.length>0) {
-    const first = args.shift()
-    const fuseArgs = [first].concat(args)
-    const fuse = ChildProcess.spawn(FUSEPATH, fuseArgs)
-    
-    const write = data => Process.stdout.write(data)
-
-    fuse.stdout.on('data', write)
-    fuse.stderr.on('data', write)
-
-    fuse.on('close', code => 
-      console.log(`Fuse exited with code ${code}`)
-    )
-  }
 }

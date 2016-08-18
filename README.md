@@ -1,4 +1,4 @@
-# Fuse build tool wrapper for [NodeJS](https://nodejs.org)
+# Fuse project integration utility for NPM
 
 Let's you use most [npm](https://www.npmjs.com/) packages with the [Fuse](https://www.fusetools.com/) scripting layer
 
@@ -22,8 +22,5 @@ Thus, you can assume that any NPM package that acts on the DOM or uses other web
 
 Generic JavaScript stuff like `ramda`, `lodash`, `rx` and the like will work fine.
 
-## Special powers
-`nfuse` itself takes no arguments, but it passes any it receives on to the `fuse` command: `nfuse preview` is synonymous with `fuse preview` 
-
 ## Disclaimers
-Under constant development. YMMV. Report errors as you encounter them. 
+Under constant development. YMMV. [Report issues](https://github.com/Sunjammer/nfuse/issues) as you encounter them. 

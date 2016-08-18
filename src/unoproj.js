@@ -29,8 +29,15 @@ module.exports.addProjects = function({project, projectsArray}) {
 }
 
 module.exports.addIncludes = function({project, includesArray}) {
+  if(!project.hasOwnProperty('Includes')) project.Includes = []
   includesArray = includesArray.map(i => i + (Path.extname(i) == '.js' ? ':Bundle' : ''))
   addUniqueArrayValues(project, 'Includes', includesArray)
+  return project
+}
+
+module.exports.addExcludes = function({project, excludesArray}) {
+  if(!project.hasOwnProperty('Excludes')) project.Excludes = []
+  addUniqueArrayValues(project, 'Excludes', excludesArray)
   return project
 }
 

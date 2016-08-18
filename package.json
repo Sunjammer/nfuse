@@ -1,6 +1,6 @@
 {
   "name": "nfuse",
-  "version": "1.2.7",
+  "version": "1.3.7",
   "description": "Fuse build tool wrapper for nodejs",
   "preferGlobal": true,
   "bin": {

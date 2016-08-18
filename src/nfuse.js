@@ -15,9 +15,10 @@ const _ = require('lodash')
 const cwd = Path.normalize(Process.cwd())
 
 const rootPackage = Utils.loadJsonFromDir({directory:cwd, filename:'package.json'})
-
-if(rootPackage==null)
-  throw 'nfuse requires a package.json to resolve dependencies'
+if(rootPackage==null){
+  console.error(`No package.json found in ${cwd}`)
+  Process.exit(1)
+}
 
 const mainProjectPath = ProjectTools.getProjectPathFromDir(cwd) 
 const mainProject = ProjectTools.loadProjectFromPath(mainProjectPath)
@@ -52,19 +53,27 @@ if(_.isEqual(previousDeps.sort(), currentDeps.sort())) {
 function buildModuleProject()
 {
   for(let moduleName in rootPackage.dependencies) {
-    let {files, dirs} = resolve({baseDir:cwd, moduleName:moduleName})
-    packageDirs = packageDirs.concat(dirs)
-    files = files.map(p => Path.relative(cwd, p))
-    if(files.length==0) throw `Couldn't resolve dependency '${moduleName}', make sure to run 'npm install'`
-    includes = includes.concat(files.map(f => Path.relative(moduleProjectDir, f)))
-    let filePath = createUnoFile({
-      name : moduleName, 
-      mainPath : Path.relative(moduleProjectDir, files[0]),
-      projectname : mainProjectName + '_modules',
-      outDir : moduleProjectDir
-    })
-    newDeps.push(moduleName+':'+rootPackage.dependencies[moduleName])
-    includes.push(Path.relative(moduleProjectDir, filePath))
+    try{
+      let {files, dirs} = resolve({baseDir:cwd, moduleName:moduleName})
+      packageDirs = packageDirs.concat(dirs)
+      files = files.map(p => Path.relative(cwd, p))
+      if(files.length==0){
+        console.error(`Couldn't resolve dependency '${moduleName}', make sure to run 'npm install'`)
+        Process.exit(1)
+      } 
+      includes = includes.concat(files.map(f => Path.relative(moduleProjectDir, f)))
+      let filePath = createUnoFile({
+        name : moduleName, 
+        mainPath : Path.relative(moduleProjectDir, files[0]),
+        projectname : mainProjectName + '_modules',
+        outDir : moduleProjectDir
+      })
+      newDeps.push(moduleName+':'+rootPackage.dependencies[moduleName])
+      includes.push(Path.relative(moduleProjectDir, filePath))
+    }catch(e){
+      console.error(e)
+      Process.exit(1)
+    }
   }
   step()
 }

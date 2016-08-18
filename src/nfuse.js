@@ -88,7 +88,8 @@ function step() {
 function collate(dir, out) {
   ignore({ path: dir, ignoreFiles: ['.npmignore', '.gitignore'] })
     .on('child', c => {
-      if(Path.extname(c.path) != '.js') return
+      const ext = Path.extname(c.path)
+      if(ext != '.js' || ext != '.unoproj') return
       let relativePath = Path.relative(moduleProjectDir, c.path)
       if(out.indexOf(relativePath) == -1) out.push(relativePath)
     }) 

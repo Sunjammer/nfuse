@@ -57,7 +57,7 @@ function buildModuleProject()
       let {files, dirs} = resolve({baseDir:cwd, moduleName:moduleName})
       packageDirs = packageDirs.concat(dirs)
       files = files.map(p => Path.relative(cwd, p))
-      console.log(`nfuse: Adding dependency ${moduleName}`)
+      console.log(`nfuse: Integrating module '${moduleName}'`)
       if(files.length==0){
         console.error(`nfuse: Couldn't resolve dependency '${moduleName}', make sure to run 'npm install'`)
         Process.exit(1)

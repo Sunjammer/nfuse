@@ -1,11 +1,19 @@
 {
   "name": "nfuse",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "Fuse project integration utility for NPM",
   "preferGlobal": true,
   "bin": {
     "nfuse": "lib/nfuse.js"
   },
+  "keywords": [
+    "fuse",
+    "tools",
+    "mobile",
+    "app",
+    "cli",
+    "javascript"
+  ],
   "bugs": {
     "url": "https://github.com/Sunjammer/nfuse/issues"
   },
@@ -20,7 +28,8 @@
   },
   "dependencies": {
     "fstream-ignore": "^1.0.5",
-    "lodash": "^4.15.0"
+    "lodash": "^4.15.0",
+    "argparse": "^1.0.7"
   },
   "devDependencies": {
     "babel-cli": "^6.0.0",

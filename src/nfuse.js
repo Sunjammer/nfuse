@@ -9,6 +9,7 @@ const resolve = require('./resolve')
 const createUnoFile = require('./create-uno')
 const ignore = require('fstream-ignore')
 const _ = require('lodash')
+const args = require('./cli')()
 
 const cwd = Path.normalize(Process.cwd())
 
@@ -39,7 +40,7 @@ for(let moduleName in rootPackage.dependencies)
 previousDeps.sort()
 currentDeps.sort()
   
-if(_.isEqual(previousDeps.sort(), currentDeps.sort())) {
+if(!args.force && _.isEqual(previousDeps.sort(), currentDeps.sort())) {
   console.warn('nfuse: No changes required')
   Process.exit(0)
 } else {
@@ -56,7 +57,7 @@ function buildModuleProject()
       let {files, dirs} = resolve({baseDir:cwd, moduleName:moduleName})
       packageDirs = packageDirs.concat(dirs)
       files = files.map(p => Path.relative(cwd, p))
-      console.log(`nfuse: Adding dependency ${moduleName}`)
+      console.log(`nfuse: Integrating module '${moduleName}'`)
       if(files.length==0){
         console.error(`nfuse: Couldn't resolve dependency '${moduleName}', make sure to run 'npm install'`)
         Process.exit(1)

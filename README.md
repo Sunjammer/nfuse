@@ -16,11 +16,13 @@ Let's you use most [npm](https://www.npmjs.com/) packages with the [Fuse](https:
 
 ## Notes on compatibility
 
-Fuse is not a web or browser based platform despite using markup and JS, and the ways that we handle data binding, layout and animation are all idiosyncratic to the platform. Fuse treats JS like a first class component, but it pays little regard to how JS is handled by other platforms: It is simply used as a scripting language.
+Fuse is not a web or browser based platform despite using markup and JS, and the ways that we handle data binding, layout and animation are all idiosyncratic to the platform. Fuse treats JS like a first class component, but it pays little regard to how JS is handled by other platforms: It is simply used as a scripting language. 
 
 Thus, you can assume that any NPM package that acts on the DOM or uses other web concepts won't behave or may not even function at all. Likewise, any NodeJS library that depends on modules like `process` and `fs` won't play nice. 
 
 Generic JavaScript stuff like `ramda`, `lodash`, `rx` and the like will work fine.
+
+Also note that Fuse has very limited native support for ES6 and only packages built for ES5 will function across all targets.
 
 ## Disclaimers
 Under constant development. YMMV. [Report issues](https://github.com/Sunjammer/nfuse/issues) as you encounter them. 

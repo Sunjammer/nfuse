@@ -27,9 +27,7 @@ function gen(typeName, name, mainPath, projectname) {
       
       static FileSource GetSource()
       {
-        var bundle = Bundle.Get("${projectname}");  
-        var f = bundle.GetFile("${mainPath}");
-        return f;
+        return Bundle.Get("${projectname}").GetFile("${mainPath}");
       }
     }
   }

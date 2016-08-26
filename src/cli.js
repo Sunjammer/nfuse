@@ -27,4 +27,15 @@ parser.addArgument(
   }
 )
 
+parser.addArgument(
+  [ '-i', '--include' ],
+  {
+    defaultValue: '',
+    action: 'append',
+    nargs: 1,
+    metavar: 'jspath',
+    help: 'Generate the Uno shim for a custom JS entrypoint path. Repeatable (-i foo.js -i bar.js)'
+  }
+)
+
 module.exports = () => parser.parseArgs()

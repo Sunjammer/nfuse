@@ -16,4 +16,15 @@ parser.addArgument(
   }
 )
 
+parser.addArgument(
+  [ '-b', '--browser' ],
+  {
+    defaultValue: '',
+    action: 'append',
+    nargs: 1,
+    metavar: 'libname',
+    help: 'Prefer browser entrypoint for this library over main if found. Repeatable (-b foo -b bar).'
+  }
+)
+
 module.exports = () => parser.parseArgs()

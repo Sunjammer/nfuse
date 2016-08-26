@@ -14,6 +14,11 @@ Let's you use most [npm](https://www.npmjs.com/) packages with the [Fuse](https:
 
 `nfuse` is a command written for NodeJS that generates Uno source and project files based on dependencies declared in `package.json` to allow you to easily `require` those modules in your Fuse JavaScript source. When you run it in a fuse project directory, it will create a new subdirectory for NPM shenanigans containing a new Uno project and some Uno source shims. It'll then add a project reference to your original project for happy building times.
 
+## Arguments
+
+* `--force` By default, nfuse will early-out if the list of dependencies in package.json has not changed since last run. This flag overrides that behavior.
+* `--browser libname` Some libraries might not function correctly in their node variant when running in Fuse. You may have better luck with the browser entrypoint if the library offers one. This argument lets you specify libraries for which nfuse will prefer the browser entrypoint if available. You can repeat to flag multiple libraries (`-b foo -b bar`).
+
 ## Notes on compatibility
 
 Fuse is not a web or browser based platform despite using markup and JS, and the ways that we handle data binding, layout and animation are all idiosyncratic to the platform. Fuse treats JS like a first class component, but it pays little regard to how JS is handled by other platforms: It is simply used as a scripting language. 

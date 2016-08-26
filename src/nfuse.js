@@ -54,7 +54,7 @@ function buildModuleProject()
 {
   for(let moduleName in rootPackage.dependencies) {
     try{
-      let {files, dirs} = resolve({baseDir:cwd, moduleName:moduleName})
+      let {files, dirs} = resolve({baseDir:cwd, moduleName:moduleName, preferBrowser:_.flatten(args.browser)})
       packageDirs = packageDirs.concat(dirs)
       files = files.map(p => Path.relative(cwd, p))
       console.log(`nfuse: Integrating module '${moduleName}'`)

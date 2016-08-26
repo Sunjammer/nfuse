@@ -29,7 +29,7 @@ function loadAsFile(filePath, outPaths) {
   return true
 }
 
-function loadAsDir(f, outPaths, outDirs){
+function loadAsDir(f, outPaths, outDirs, preferBrowser){
   if(!FS.existsSync(f)) 
     return false
     
@@ -41,12 +41,15 @@ function loadAsDir(f, outPaths, outDirs){
   if(FS.existsSync(packagePath)) {
     outDirs.push(f)
     let pack = Utils.loadJson(packagePath)
-    if(pack.main !== undefined) {
+    let mainPath = ''
+    if(preferBrowser.includes(pack.name) && pack.browser !== undefined) {
+      mainPath = f + Path.sep + pack.browser
+    }else if(pack.main !== undefined) {
       // I'm not sure I should return here, but how node would handle a main AND an index isn't documented
-      let mainPath = f+Path.sep+pack.main
-      if(!(success = loadAsFile(mainPath, outPaths)))
-        success = loadAsFile(mainPath+'.js', outPaths)
+      mainPath = f + Path.sep + pack.main
     }
+    if(!(success = loadAsFile(mainPath, outPaths)))
+      success = loadAsFile(mainPath+'.js', outPaths)
   }
   
   success = success 
@@ -60,11 +63,11 @@ function loadAsDir(f, outPaths, outDirs){
   return success
 }
 
-function loadNodeModules(moduleName, startPath, outPaths, outDirs) {
+function loadNodeModules(moduleName, startPath, outPaths, outDirs, preferBrowser) {
   let dirs = nodeModulesPaths(startPath)
   dirs.forEach( dir => {
     loadAsFile(dir + Path.sep + moduleName, outPaths)
-    loadAsDir(dir + Path.sep + moduleName, outPaths, outDirs)
+    loadAsDir(dir + Path.sep + moduleName, outPaths, outDirs, preferBrowser)
   })
 }
 
@@ -86,12 +89,12 @@ function nodeModulesPaths(startPath) {
   return dirs
 }
 
-module.exports = function({baseDir, moduleName}) {
+module.exports = function({baseDir, moduleName, preferBrowser = []}) {
   let output = {files:[], dirs:[]}
   
   /*1. If X is a core module,
      a. return the core module
      b. STOP*/ // Super Polyfill Bros 2
-  loadNodeModules(moduleName, baseDir, output.files, output.dirs)
+  loadNodeModules(moduleName, baseDir, output.files, output.dirs, preferBrowser)
   return output
 }

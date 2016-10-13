@@ -42,7 +42,7 @@ function loadAsDir(f, outPaths, outDirs, preferBrowser){
     outDirs.push(f)
     let pack = Utils.loadJson(packagePath)
     let mainPath = ''
-    if(preferBrowser.includes(pack.name) && pack.browser !== undefined) {
+    if(preferBrowser.indexOf(pack.name) > -1 && pack.browser !== undefined) {
       mainPath = f + Path.sep + pack.browser
     }else if(pack.main !== undefined) {
       // I'm not sure I should return here, but how node would handle a main AND an index isn't documented

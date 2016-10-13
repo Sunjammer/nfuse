@@ -40,7 +40,7 @@ for(let moduleName in rootPackage.dependencies)
 previousDeps.sort()
 currentDeps.sort()
   
-if(!args.force && _.isEqual(previousDeps.sort(), currentDeps.sort())) {
+if(args.include.length == 0 && !args.force && _.isEqual(previousDeps.sort(), currentDeps.sort())) {
   console.warn('nfuse: No changes required')
   Process.exit(0)
 } else {
@@ -52,12 +52,12 @@ if(!args.force && _.isEqual(previousDeps.sort(), currentDeps.sort())) {
 
 function buildModuleProject()
 {
-  for(let moduleName in rootPackage.dependencies) {
-    try{
+  try{
+    for(let moduleName in rootPackage.dependencies) {
       let {files, dirs} = resolve({baseDir:cwd, moduleName:moduleName, preferBrowser:_.flatten(args.browser)})
       packageDirs = packageDirs.concat(dirs)
       files = files.map(p => Path.relative(cwd, p))
-      console.log(`nfuse: Integrating module '${moduleName}'`)
+      console.log(`nfuse: Including module '${moduleName}'`)
       if(files.length==0){
         console.error(`nfuse: Couldn't resolve dependency '${moduleName}', make sure to run 'npm install'`)
         Process.exit(1)
@@ -71,10 +71,24 @@ function buildModuleProject()
       })
       newDeps.push(moduleName+':'+rootPackage.dependencies[moduleName])
       includes.push(Path.relative(moduleProjectDir, filePath))
-    }catch(e){
-      console.error(e)
-      Process.exit(1)
     }
+    _.flatten(args.include).forEach(includePath => {
+      console.log(`nfuse: Including module from source at '${includePath}'`)
+      if(!FS.existsSync(includePath))
+        throw `${includePath} does not exist`
+      let filePath = createUnoFile({
+        name : Path.basename(includePath, '.js'),
+        mainPath : Path.relative(moduleProjectDir, includePath),
+        projectname : mainProjectName + '_modules',
+        outDir : moduleProjectDir
+      })
+      includes.push(Path.relative(moduleProjectDir, includePath))
+      includes.push(Path.relative(moduleProjectDir, filePath))
+    })
+  }catch(e){
+    console.error(e)
+    console.log('nfuse: Failed')
+    Process.exit(1)
   }
   step()
 }

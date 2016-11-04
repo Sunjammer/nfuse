@@ -58,7 +58,8 @@ function buildModuleProject()
     
     for(let moduleName in rootPackage.dependencies) {
       modulesToResolve.push(moduleName)
-      modulesToResolve = modulesToResolve.concat(getSubDependencies({baseDir:cwd, moduleName:moduleName}))
+      if(cliArgs.experimental)
+        modulesToResolve = modulesToResolve.concat(getSubDependencies({baseDir:cwd, moduleName:moduleName}))
     }
     
     modulesToResolve

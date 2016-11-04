@@ -1,6 +1,6 @@
 {
   "name": "nfuse",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "Fuse project integration utility for NPM",
   "preferGlobal": true,
   "bin": {
@@ -18,7 +18,7 @@
     "url": "https://github.com/Sunjammer/nfuse/issues"
   },
   "scripts": {
-    "build": "babel src -d lib --no-comments"
+    "build": "babel src -d lib --no-comments && npm link"
   },
   "author": "Andreas Rønning | fusetools.com",
   "license": "MIT",

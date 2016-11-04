@@ -3,7 +3,7 @@ const FS = require('fs')
 const Path = require('path')
 const Utils = require('./utils')
 
-function loadAsFile(filePath, outPaths) {
+function loadAsFile(root, filePath, outPaths) {
   if(!FS.existsSync(filePath)) {
     if(!FS.existsSync(filePath+'.js'))
       return false
@@ -29,7 +29,7 @@ function loadAsFile(filePath, outPaths) {
   return true
 }
 
-function loadAsDir(f, outPaths, outDirs, preferBrowser){
+function loadAsDir(root, f, outPaths, outDirs, preferBrowser){
   if(!FS.existsSync(f)) 
     return false
     
@@ -48,14 +48,17 @@ function loadAsDir(f, outPaths, outDirs, preferBrowser){
       // I'm not sure I should return here, but how node would handle a main AND an index isn't documented
       mainPath = f + Path.sep + pack.main
     }
-    if(!(success = loadAsFile(mainPath, outPaths)))
-      success = loadAsFile(mainPath+'.js', outPaths)
+    for(let d in pack.dependencies)
+      loadNodeModules(d, root, outPaths, outDirs, preferBrowser)
+    
+    if(!(success = loadAsFile(root, mainPath, outPaths)))
+      success = loadAsFile(root, mainPath+'.js', outPaths)
   }
   
   success = success 
-    || loadAsFile(f+Path.sep+'index.js', outPaths) 
-    || loadAsFile(f+Path.sep+'index.json', outPaths) 
-    || loadAsFile(f+Path.sep+'index.node', outPaths)
+    || loadAsFile(root, f+Path.sep+'index.js', outPaths) 
+    || loadAsFile(root, f+Path.sep+'index.json', outPaths) 
+    || loadAsFile(root, f+Path.sep+'index.node', outPaths)
     
   if(!success)
     console.log(`Couldn't resolve ${f} as directory`)
@@ -66,8 +69,8 @@ function loadAsDir(f, outPaths, outDirs, preferBrowser){
 function loadNodeModules(moduleName, startPath, outPaths, outDirs, preferBrowser) {
   let dirs = nodeModulesPaths(startPath)
   dirs.forEach( dir => {
-    loadAsFile(dir + Path.sep + moduleName, outPaths)
-    loadAsDir(dir + Path.sep + moduleName, outPaths, outDirs, preferBrowser)
+    loadAsFile(startPath, dir + Path.sep + moduleName, outPaths)
+    loadAsDir(startPath, dir + Path.sep + moduleName, outPaths, outDirs, preferBrowser)
   })
 }
 
@@ -89,7 +92,7 @@ function nodeModulesPaths(startPath) {
   return dirs
 }
 
-module.exports = function({baseDir, moduleName, preferBrowser = []}) {
+function resolve({baseDir, moduleName, preferBrowser = []}) {
   let output = {files:[], dirs:[]}
   
   /*1. If X is a core module,
@@ -97,4 +100,29 @@ module.exports = function({baseDir, moduleName, preferBrowser = []}) {
      b. STOP*/ // Super Polyfill Bros 2
   loadNodeModules(moduleName, baseDir, output.files, output.dirs, preferBrowser)
   return output
+}
+
+function getSubDependencies({baseDir, moduleName})
+{
+  let output = []
+  let dirs = nodeModulesPaths(baseDir)
+  dirs.forEach( dir => {
+    let f = dir + Path.sep + moduleName
+    if(!FS.existsSync(f)) 
+      return false
+    
+    let packagePath = f + Path.sep + 'package.json'
+    if(FS.existsSync(packagePath)) {
+      let pack = Utils.loadJson(packagePath)
+      for(let d in pack.dependencies)
+        output.push(d)
+    }
+  })
+  return output
+}
+
+module.exports = 
+{
+  resolve,
+  getSubDependencies
 }

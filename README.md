@@ -14,6 +14,8 @@ Let's you use most [npm](https://www.npmjs.com/) packages with the [Fuse](https:
 
 `nfuse` is a command written for NodeJS that generates Uno source and project files based on dependencies declared in `package.json` to allow you to easily `require` those modules in your Fuse JavaScript source. When you run it in a fuse project directory, it will create a new subdirectory for NPM shenanigans containing a new Uno project and some Uno source shims. It'll then add a project reference to your original project for happy building times.
 
+In Fuse terms, this means that instead of doing, say, `require('./node_modules/lodash.isnull/index.js')` you would, given a package.json dependency on lodash.isnull, just `require('lodash.isnull')`
+
 ## Arguments
 
 * `--force` By default, nfuse will early-out if the list of dependencies in package.json has not changed since last run. This flag overrides that behavior.

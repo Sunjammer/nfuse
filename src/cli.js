@@ -38,4 +38,14 @@ parser.addArgument(
   }
 )
 
+parser.addArgument(
+  [ '-e', '--experimental' ],
+  {
+    defaultValue: false,
+    action: 'storeTrue',
+    nargs: 0,
+    help: 'Enable experimental features (see github)'
+  }
+)
+
 module.exports = () => parser.parseArgs()

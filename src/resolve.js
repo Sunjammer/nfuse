@@ -48,11 +48,12 @@ function loadAsDir(root, f, outPaths, outDirs, preferBrowser){
       // I'm not sure I should return here, but how node would handle a main AND an index isn't documented
       mainPath = f + Path.sep + pack.main
     }
-    for(let d in pack.dependencies)
-      loadNodeModules(d, root, outPaths, outDirs, preferBrowser)
     
     if(!(success = loadAsFile(root, mainPath, outPaths)))
       success = loadAsFile(root, mainPath+'.js', outPaths)
+      
+    for(let d in pack.dependencies)
+      loadNodeModules(d, root, outPaths, outDirs, preferBrowser)
   }
   
   success = success 

@@ -67,11 +67,11 @@ function buildModuleProject()
         let {files, dirs} = resolve({baseDir:cwd, moduleName:moduleName, preferBrowser:_.flatten(cliArgs.browser)})
         packageDirs = packageDirs.concat(dirs)
         files = files.map(p => Path.relative(cwd, p))
-        console.log(`nfuse: Including module '${moduleName}'`)
         if(files.length==0){
           console.error(`nfuse: Couldn't resolve dependency '${moduleName}', make sure to run 'npm install'`)
           Process.exit(1)
         } 
+        console.log(`nfuse: Including module '${moduleName}' as '${files[0]}'`)
         includes = includes.concat(files.map(f => Path.relative(moduleProjectDir, f)))
         newDeps.push(moduleName+':'+rootPackage.dependencies[moduleName])
         

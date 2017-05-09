@@ -16,13 +16,13 @@ function gen(typeName, name, mainPath, projectname) {
     public sealed class Lib_${typeName} : FileModule, IModuleProvider
     {
       public Module GetModule()
-  		{
-  			return this;
-  		}
+      {
+        return this;
+      }
       
       public Lib_${typeName}() : base(GetSource())
       {
-  			Resource.SetGlobalKey(this, "${name}");
+        Resource.SetGlobalKey(this, "${name}");
       }
       
       static FileSource GetSource()

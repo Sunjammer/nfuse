@@ -29,7 +29,7 @@ Thus, you can assume that any NPM package that acts on the DOM or uses other web
 
 Generic JavaScript stuff like `ramda`, `lodash`, `rx` and the like will work fine.
 
-Also note that Fuse has very limited native support for ES6 and only packages built for ES5 will function across all targets.
+Also note that if you target iOS versions lower than 10, only ES5 packages will work on that platform.
 
 ## Disclaimers
 Under constant development. YMMV. [Report issues](https://github.com/Sunjammer/nfuse/issues) as you encounter them. 

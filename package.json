@@ -18,6 +18,7 @@
     "url": "https://github.com/Sunjammer/nfuse/issues"
   },
   "scripts": {
+    "prepublish": "NODE_ENV=production babel src -d lib --no-comments",
     "build": "babel src -d lib --no-comments && npm link"
   },
   "author": "Andreas Rønning | fusetools.com",
